@@ -1,8 +1,8 @@
 import math
-import sympy as sp
+import sympy as sp  # si ya lo usas para proyectil está bien mantenerlo
 
 def resolver_problema(params: dict) -> dict:
-    """Resuelve problemas simples según el tipo detectado."""
+    """Dispatch según tipo."""
     tipo = params.get("tipo", "desconocido")
     if tipo == "proyectil":
         return resolver_proyectil(params)
@@ -14,9 +14,10 @@ def resolver_problema(params: dict) -> dict:
         return resolver_oscilatorio(params)
     else:
         return {"error": "Tipo de problema no soportado aún."}
-    
+
 
 def resolver_proyectil(p):
+    # (mantén tu implementación existente)
     v0 = p.get("v0", 10)
     ang = math.radians(p.get("angulo", 45))
     g = p.get("g", 9.81)
@@ -32,6 +33,7 @@ def resolver_proyectil(p):
         "Rango": float(R)
     }
 
+
 def resolver_caida_libre(p):
     g = p.get("g", 9.81)
     h = p.get("h", 10)
@@ -41,36 +43,45 @@ def resolver_caida_libre(p):
         "Tiempo_caida": round(t, 3),
         "Velocidad_final": round(v, 3)
     }
-    
-def resolver_mrua(params):
-    """Resuelve problemas básicos de MRUA."""
-    v0 = float(params.get("v0", 0))
-    a = float(params.get("a", 0))
-    t = float(params.get("t", 0))
 
-    x = v0 * t + 0.5 * a * t**2
-    vf = v0 + a * t
+
+def resolver_mrua(p):
+    """
+    Calcula posición final x = x0 + v0*t + 1/2*a*t^2
+    Asume unidades SI (m, s, m/s, m/s^2).
+    """
+
+    try:
+        v0 = float(p.get("v0", 0.0))
+        a = float(p.get("a", 0.0))
+        t = float(p.get("t", 0.0))
+        x0 = float(p.get("x0", 0.0))
+    except (TypeError, ValueError):
+        return {"error": "Valores numéricos inválidos para v0, a o t."}
+
+    # Validaciones básicas
+    if t <= 0:
+        # Si t==0 devolvemos la pos inicial
+        x = x0
+    else:
+        x = x0 + v0 * t + 0.5 * a * t**2
 
     return {
-        "posición (m)": round(x, 3),
-        "velocidad final (m/s)": round(vf, 3)
+        "posicion_final_m": round(x, 6),
+        "unidad": "m",
+        "metodo": "x = x0 + v0*t + 1/2*a*t^2"
     }
 
 
-def resolver_oscilatorio(params):
-    """Movimiento armónico simple: x(t)=A cos(wt + φ)."""
-    import math
-
-    A = float(params.get("A", 1))
-    w = float(params.get("w", 1))
-    phi = float(params.get("phi", 0))
-    t = float(params.get("t", 0))
-
+def resolver_oscilatorio(p):
+    """Movimiento armónico simple: x(t)=A cos(w t + phi) — calcula posición a un tiempo t."""
+    A = float(p.get("A", 1.0))
+    w = float(p.get("w", 1.0))
+    phi = float(p.get("phi", 0.0))
+    t = float(p.get("t", 0.0))
     x = A * math.cos(w * t + phi)
-    v = -A * w * math.sin(w * t + phi)
-
     return {
-        "posición (m)": round(x, 3),
-        "velocidad (m/s)": round(v, 3)
+        "posicion_m": round(x, 6),
+        "unidad": "m",
+        "metodo": "x(t) = A cos(ω t + φ)"
     }
-
