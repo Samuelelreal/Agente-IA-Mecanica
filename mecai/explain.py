@@ -13,5 +13,10 @@ def generar_explicacion(datos, solucion):
             f"El tiempo de caída fue {solucion['Tiempo_caida']} s "
             f"y la velocidad al impactar fue {solucion['Velocidad_final']} m/s."
         )
+    elif tipo == "mrua":
+        return ("Usando las ecuaciones del MRUA: x = v0·t + 1/2·a·t² y vf = v0 + a·t")
+
+    elif tipo == "oscilatorio":
+        return ("Solución del movimiento armónico simple: x(t)=Acos(ωt+φ) y v(t)=-Aωsen(ωt+φ)")
     else:
         return "No se pudo generar explicación para este tipo de problema."
