@@ -18,6 +18,12 @@ def parse_enunciado(texto: str) -> dict:
         res["tipo"] = "proyectil"
     elif "cae" in texto:
         res["tipo"] = "caida_libre"
+    if "acelerado" in texto or "MRUA" in texto or "aceleración constante" in texto:
+        res["tipo"] = "mrua"
+
+    # Detectar oscilaciones
+    elif "oscil" in texto or "resorte" in texto or "armónico" in texto:
+        res["tipo"] = "oscilatorio"
     else:
         res["tipo"] = "desconocido"
     return res
