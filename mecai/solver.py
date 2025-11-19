@@ -8,8 +8,13 @@ def resolver_problema(params: dict) -> dict:
         return resolver_proyectil(params)
     elif tipo == "caida_libre":
         return resolver_caida_libre(params)
+    elif tipo == "mrua":
+        return resolver_mrua(params)
+    elif tipo == "oscilatorio":
+        return resolver_oscilatorio(params)
     else:
         return {"error": "Tipo de problema no soportado aún."}
+    
 
 def resolver_proyectil(p):
     v0 = p.get("v0", 10)
@@ -36,3 +41,36 @@ def resolver_caida_libre(p):
         "Tiempo_caida": round(t, 3),
         "Velocidad_final": round(v, 3)
     }
+    
+def resolver_mrua(params):
+    """Resuelve problemas básicos de MRUA."""
+    v0 = float(params.get("v0", 0))
+    a = float(params.get("a", 0))
+    t = float(params.get("t", 0))
+
+    x = v0 * t + 0.5 * a * t**2
+    vf = v0 + a * t
+
+    return {
+        "posición (m)": round(x, 3),
+        "velocidad final (m/s)": round(vf, 3)
+    }
+
+
+def resolver_oscilatorio(params):
+    """Movimiento armónico simple: x(t)=A cos(wt + φ)."""
+    import math
+
+    A = float(params.get("A", 1))
+    w = float(params.get("w", 1))
+    phi = float(params.get("phi", 0))
+    t = float(params.get("t", 0))
+
+    x = A * math.cos(w * t + phi)
+    v = -A * w * math.sin(w * t + phi)
+
+    return {
+        "posición (m)": round(x, 3),
+        "velocidad (m/s)": round(v, 3)
+    }
+
